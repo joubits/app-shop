@@ -7,7 +7,7 @@
   <link rel="icon" type="image/png" href="../assets/img/favicon.png">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <title>
-    @yield('title','Tienda Virtual Online') 
+    @yield('title',"Compras Online en config('app.name')") 
   </title>
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
   <!--     Fonts and icons     -->
@@ -23,7 +23,7 @@
     <div class="container">
       <div class="navbar-translate">
         <a class="navbar-brand" href="{{ url('/') }}">
-          Tienda Virtual Online </a>
+          {{ config('app.name') }} </a>
       </div>
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav ml-auto">
@@ -37,14 +37,15 @@
                 </a>
 
               <ul class="dropdown-menu">
-                @if(auth()->user()->admin)
+                
                 <li>
-                  
-                  <a href="{{ url('/admin/products') }}">Gestionar Productos</a>
                   <a href="{{ url('/home') }}">Dashboard</a>
-
+                  @if(auth()->user()->admin)
+                  <a href="{{ url('/admin/categories') }}">Gestionar Categorias</a>
+                  <a href="{{ url('/admin/products') }}">Gestionar Productos</a>
+                  @endif
                 </li>
-                @endif
+                
                 <li>
                     <a href="{{ route('logout') }}"
                         onclick="event.preventDefault();
@@ -97,6 +98,8 @@
   <script src="{{ asset('js/plugins/jquery.sharrre.js') }}" type="text/javascript"></script>
   <!-- Control Center for Material Kit: parallax effects, scripts for the example pages etc -->
   <script src="{{ asset('js/material-kit.js?v=2.0.4') }}" type="text/javascript"></script>
+
+  @yield('scripts')
 </body>
 
 </html>

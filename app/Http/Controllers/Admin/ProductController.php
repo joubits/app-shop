@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use App\Product;
+use App\Category;
 use App\ProductImage;
 
 class ProductController extends Controller
@@ -20,7 +21,9 @@ class ProductController extends Controller
 
     public function create()
     {
-    	return view('admin.products.create');
+        //get categories
+        $categories = Category::orderBy('name')->get();
+    	return view('admin.products.create')->with(compact('categories'));
     	
     }
 
@@ -29,9 +32,9 @@ class ProductController extends Controller
     	$messages = [
     		'name.required' => 'El nombre es un campo obligatorio.',
     		'name.min' => 'El nombre debe tener al menos 3 caracteres.',
-    		'description.required' => 'La descripcion es requerida.',
+    		'description.required' => 'La descripcion es un campo obligatorio.',
     		'description.max' => 'La descripcion tiene maximo 200 caracteres.',
-    		'price.required' => 'El precio es obligatorio.',
+    		'price.required' => 'El precio es un campo obligatorio.',
     		'price.numeric' => 'El precio es un caracter numerico.',
     		'price.min' => 'El precio debe ser numero positivo.'
 
@@ -49,6 +52,7 @@ class ProductController extends Controller
     	$product->description = $request->input('description');
     	$product->long_description = $request->input('long_description');
     	$product->price = $request->input('price');
+        $product->category_id = $request->input('category_id');
 
     	$product->save();
     	return redirect('/admin/products');
@@ -58,7 +62,9 @@ class ProductController extends Controller
     public function edit($id)
     {
     	$product = Product::find($id);
-    	return view('admin.products.edit')->with(compact('product'));
+        //get categories
+        $categories = Category::orderBy('name')->get();
+    	return view('admin.products.edit')->with(compact('product','categories'));
     	
     }
 
@@ -89,6 +95,7 @@ class ProductController extends Controller
     	$product->description = $request->input('description');
     	$product->long_description = $request->input('long_description');
     	$product->price = $request->input('price');
+        $product->category_id = $request->input('category_id');
 
     	$product->save();
     	return redirect('/admin/products');

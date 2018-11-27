@@ -28,7 +28,7 @@
       &copy;
       <script>
         document.write(new Date().getFullYear())
-      </script>, Joubits con <i class="material-icons">favorite</i> Gracias a 
+      </script><a href="http://www.joubits.com"> Joubits </a> <i class="material-icons">favorite</i> Gracias a 
       <a href="https://www.creative-tim.com" target="_blank">Creative Tim</a>.
     </div>
   </div>

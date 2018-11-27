@@ -19,42 +19,38 @@
 <div class="main main-raised">
   <div class="container">
     <div class="section text-center">
-      <h2 class="title">Listado de Productos</h2>
-      <a href="{{ url('/admin/products/create') }}" class="btn btn-primary btn-round">NUEVO PRODUCTO</a>
+      <h2 class="title">Listado de Categorias</h2>
+      <a href="{{ url('/admin/categories/create') }}" class="btn btn-primary btn-round">NUEVA CATEGORIA</a>
       <div class="team">
-          <div class="row">
+        @if(session('notification'))
 
+          <div class="text-left alert alert-success">
+            {{ session('notification') }}
+          </div>
+        @endif
+          <div class="row">
+            
             <table class="table">
               <thead>
                   <tr>
-                      <th class="text-center">Id</th>
                       <th width="20%">Nombre</th>
                       <th width="30%">Descripción</th>
-                      <th>Categoría</th>
-                      <th class="text-right">Precio</th>
                       <th class="text-center">Opciones</th>
                   </tr>
               </thead>
               <tbody>
-                  @foreach($products as $product)
+                  @foreach($categories as $category)
                   <tr>
-                      <td class="text-center">{{ $product->id }}</td>
-                      <td>{{ $product->name }}</td>
-                      <td>{{ $product->description }}</td>
-                      <td>{{ $product->category_name }}</td>
-                      <td class="text-right">{{ $product->price }}</td>
+                      <td>{{ $category->name }}</td>
+                      <td>{{ $category->description }}</td>
                       <td class="td-actions text-right">
                           
-                          <form method="post" action="{{ url('/admin/products/'.$product->id) }}">
-                            <a href="{{ url('/products/'.$product->id) }}" rel="tooltip" title="Ver Detalle" class="btn btn-info btn-simple btn-sm" target="_blank">
-                              <i class="fa fa-info"></i>
-                            </a>
-                            <a href="{{ url('/admin/products/'.$product->id.'/edit') }}" rel="tooltip" title="Editar" class="btn btn-success btn-simple btn-sm">
+                          <form method="post" action="{{ url('/admin/categories/'.$category->id) }}">
+                            
+                            <a href="{{ url('/admin/categories/'.$category->id.'/edit') }}" rel="tooltip" title="Editar" class="btn btn-success btn-simple btn-sm">
                                 <i class="fa fa-edit"></i>
                             </a>
-                            <a href="{{ url('/admin/products/'.$product->id.'/images') }}" rel="tooltip" title="Ver Imágenes" class="btn btn-warning btn-simple btn-sm">
-                              <i class="fa fa-image"></i>
-                            </a>
+                           
                             {{ csrf_field() }}
                             {{ method_field('DELETE') }}
                             <button type="submit" rel="tooltip" title="Eliminar" class="btn btn-danger btn-simple btn-sm">
@@ -67,7 +63,7 @@
               </tbody>
             </table>
             
-            {{ $products->links('pagination::bootstrap-4') }}    
+            {{ $categories->links('pagination::bootstrap-4') }}    
             
           </div>
         </div>

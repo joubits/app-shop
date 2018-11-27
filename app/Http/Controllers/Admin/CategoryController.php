@@ -1,0 +1,68 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Category;
+
+class CategoryController extends Controller
+{
+    public function index()
+    {
+    	$categories = Category::orderBy('name')->paginate(5);
+    	return view('admin.categories.index')->with(compact('categories'));
+    }
+
+    public function create(Request $request)
+    {
+    	return view('admin.categories.create');
+    }
+
+    public function store(Request $request)
+    {
+
+    	$this->validate($request, Category::$rules, Category::$messages);
+
+    	//registrar en bd
+    	Category::create($request->all()); //mass assigment
+
+    	$notification = 'Categoria creada exitosamente';
+    	return redirect('/admin/categories')->with(compact('notification'));
+    	
+    }
+
+    public function edit(Category $category)
+    {
+    	return view('admin.categories.edit')->with(compact('category'));
+    }
+
+    public function update(Request $request, Category $category)
+    {
+    	//validar datos
+    	$this->validate($request, Category::$rules, Category::$messages);
+
+    	//update en bd
+    	$category->update($request->all()); //mass assigment
+
+    	// $category = Category::find($id);
+    	// $category->name = $request->input('name');
+    	// $category->description = $request->input('description');
+
+    	// $category->save();
+    	$notification = 'Categoria actualizada exitosamente';
+    	return redirect('/admin/categories')->with(compact('notification'));
+    	
+    }
+
+    public function destroy(Category $category)
+    {
+    	
+    	$category->delete();
+
+    	$notification = 'Categoria eliminada correctamente';
+    	return redirect('/admin/categories')->with(compact('notification'));
+
+
+    }
+}

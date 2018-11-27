@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title','Bienvenido a su Tienda Virtual Online')
+@section('title', 'Bienvenidos a '.config('app.name'))
 
 @section('body-class', 'landing-page sidebar-collapse')
 
@@ -9,6 +9,46 @@
 
 .team .row .col-md-4{
   margin-bottom: 1em;
+}
+
+.tt-query {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.tt-hint {
+  color: #999
+}
+
+.tt-menu {    /* used to be tt-dropdown-menu in older versions */
+  width: 152px;
+  margin-top: 4px;
+  padding: 4px 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          box-shadow: 0 5px 10px rgba(0,0,0,.2);
+}
+
+.tt-suggestion {
+  padding: 3px 20px;
+  line-height: 24px;
+}
+
+.tt-suggestion.tt-cursor,.tt-suggestion:hover {
+  color: #fff;
+  background-color: #0097cf;
+
+}
+
+.tt-suggestion p {
+  margin: 0;
 }
   
 </style>
@@ -21,12 +61,12 @@
       <div class="container">
         <div class="row">
           <div class="col-md-6">
-            <h1 class="title">Bienvenido a su Tienda Virtual.</h1>
-            <h4>Realice sus pedidos de todos los productos disponibles y nosotros lo contactaremos para coordinar la entrega.</h4>
+            <h1 class="title">Bienvenidos a Comercial Don Alfredo.</h1>
+            <h4>Tenemos una amplia variedad de productos de primera necesidad distribuidos en diferentes categorías. Elija y compre lo que desee, lo contactaremos de inmediato para coordinar la entrega.</h4>
             <br>
-            <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" class="btn btn-danger btn-raised btn-lg">
+            <!-- <a href="https://www.youtube.com/watch?v=_3SiHzTD7Sg" target="_blank" class="btn btn-danger btn-raised btn-lg">
               <i class="fa fa-play"></i> Mas info!
-            </a>
+            </a> -->
           </div>
         </div>
       </div>
@@ -36,8 +76,8 @@
     <div class="section text-center">
       <div class="row">
         <div class="col-md-8 ml-auto mr-auto">
-          <h2 class="title">Por qué Tienda Virtual Online?</h2>
-          <h5 class="description">Porque tenemos una relación muy completa entre productos, comparar precios, y realizar sus pedidos cuando estés seguro.</h5>
+          <h2 class="title">Por qué  comprar Online en {{ config('app.name') }}?</h2>
+          <h5 class="description">Porque tenemos una relación muy completa entre productos de calidad, precios justos y cómodos y realizar sus pedidos cuando estés seguro.</h5>
         </div>
       </div>
       <div class="features">
@@ -73,25 +113,33 @@
       </div>
     </div>
     <div class="section text-center">
-      <h2 class="title">Productos Disponibles</h2>
+      <h2 class="title">Visite nuestras Categorías</h2>
+      
+      <form class="form-inline justify-content-center" method="get" action="{{ url('/search') }}">
+        <input type="text" name="query" class="form-control" placeholder="Que producto busca??" id="search" >
+        <button class="btn btn-primary btn-fab btn-fab-mini btn-round" type="submit">
+          <i class="material-icons">search</i>
+        </button>
+      </form>
+
       <div class="team">
         <div class="row">
           
-          @foreach ($products as $product)
+          @foreach ($categories as $category)
 
           <div class="col-md-4">
             <div class="team-player">
               <div class="card card-plain">
                 <div class="col-md-6 ml-auto mr-auto">
-                  <img src="{{ $product->featured_image_url }}" alt="Thumbnail Image" class="img-raised rounded-circle img-fluid">
+                  <img src="{{ $category->featured_image_url }}" alt="Thumbnail Image" class="img-raised rounded-circle img-fluid">
                 </div>
                 <h4 class="card-title">
-                  <a href="{{ url('/products/'.$product->id) }}">{{ $product->name }}</a>
+                  <a href="{{ url('/categories/'.$category->id) }}">{{ $category->name }}</a>
                   <br>
-                  <small class="card-description text-muted">{{ $product->category->name }}</small>
+                  <small class="card-description text-muted">{{ $category->category_name }}</small>
                 </h4>
                 <div class="card-body">
-                  <p class="card-description">{{ $product->description }}
+                  <p class="card-description">{{ $category->description }}
                   </p>
                 </div>
                 <div class="card-footer justify-content-center">
@@ -101,9 +149,6 @@
             </div>
           </div>
           @endforeach
-          </div>
-          <div class="row justify-content-center">
-            {{ $products->links('pagination::bootstrap-4') }}
           </div>
         </div>
       </div>
@@ -145,5 +190,35 @@
     </div>
   </div>
 </div>
+
+@section('scripts')
+
+<script src="{{ asset('/js/plugins/typeahead.bundle.min.js') }}" type="text/javascript"></script>
+<script type="text/javascript">
+
+  $(function() {
+    // inicializar typeahead para el input de la búsqueda
+    var products = new Bloodhound({
+      datumTokenizer: Bloodhound.tokenizers.whitespace,
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+      // `states` is an array of state names defined in "The Basics"
+      //local: ['hola1','hola2', 'prueba1', 'abcde']
+      prefetch: '/products/json'
+    });
+
+    $('#search').typeahead({
+      hint: true,
+      highlight: true,
+      minLength: 1
+    },
+    {
+      name: 'products',
+      source: products
+    });
+  });
+  
+</script>>
+
+@endsection
 
 @endsection
