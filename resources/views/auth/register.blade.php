@@ -43,7 +43,7 @@
                           <i class="material-icons">face</i>
                       </span>
                   </div>
-                  <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}" placeholder="First Name..." required autofocus>
+                  <input id="name" type="text" class="form-control" name="name" value="{{ old('name', $name) }}" placeholder="First Name..." required autofocus>
               </div>
               <div class="input-group">
                 <div class="input-group-prepend">
@@ -52,7 +52,25 @@
                   </span>
                 </div>
                 
-                <input id="email" type="email" placeholder="Email..." class="form-control" name="email" value="{{ old('email') }}" required autofocus>
+                <input id="email" type="email" placeholder="Email..." class="form-control" name="email" value="{{ old('email',$email) }}" required autofocus>
+              </div>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">
+                    <i class="material-icons">phone</i>
+                  </span>
+                </div>
+                
+                <input id="phone" type="phone" placeholder="Teléfono" class="form-control" name="phone" value="{{ old('phone') }}" required autofocus>
+              </div>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">
+                    <i class="material-icons">class</i>
+                  </span>
+                </div>
+                
+                <input id="address" type="text" placeholder="Dirección" class="form-control" name="address" value="{{ old('address') }}" required autofocus>
               </div>
               <div class="input-group">
                 <div class="input-group-prepend">
@@ -72,6 +90,9 @@
               </div>
               
             </div>
+            <br>
+            <br>
+            <br>
             <div class="footer text-center">
               <button type="submit" class="btn btn-primary btn-link btn-wd btn-lg">Registrar</button>
             </div>

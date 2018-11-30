@@ -29,7 +29,7 @@ class Product extends Model
             return $featured_image->url;
         }
 
-        return '/images/products/default.png';
+        return '/images/default.png';
     }
 
     public function getCategoryNameAttribute()

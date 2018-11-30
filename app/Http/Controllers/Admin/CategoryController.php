@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Category;
 
+use File;
+
 class CategoryController extends Controller
 {
     public function index()
@@ -25,10 +27,24 @@ class CategoryController extends Controller
     	$this->validate($request, Category::$rules, Category::$messages);
 
     	//registrar en bd
-    	Category::create($request->all()); //mass assigment
+    	$category = Category::create($request->only('name','description'));
 
-    	$notification = 'Categoria creada exitosamente';
-    	return redirect('/admin/categories')->with(compact('notification'));
+        if($request->hasFile('image'))
+        {
+            # guardar img categoria en nuestro proyecto
+            $file = $request->file('image');
+            $path = public_path().'/images/categories';
+            $filename = uniqid() .'-'. $file->getClientOriginalName();
+            $moved = $file->move($path,$filename);
+            # update category
+            if($moved){
+                $category->image = $filename;
+                $category->save();
+            }
+
+        }
+        $notification = 'Categoria creada exitosamente';
+        return redirect('/admin/categories')->with(compact('notification'));
     	
     }
 
@@ -43,11 +59,33 @@ class CategoryController extends Controller
     	$this->validate($request, Category::$rules, Category::$messages);
 
     	//update en bd
-    	$category->update($request->all()); //mass assigment
+    	$category->update($request->only('name','description')); //mass assigment
 
     	// $category = Category::find($id);
     	// $category->name = $request->input('name');
     	// $category->description = $request->input('description');
+
+        if($request->hasFile('image'))
+        {
+            # guardar img categoria en nuestro proyecto
+            $file = $request->file('image');
+            $path = public_path().'/images/categories';
+            $filename = uniqid() .'-'. $file->getClientOriginalName();
+            $moved = $file->move($path,$filename);
+            # update category
+            if($moved){
+                //se elimina imagen anterior...
+                $previous_path = $path . '/'. $category->image;
+                $category->image = $filename;
+                $saved = $category->save();
+
+                if($saved)
+                    File::delete($previous_path);
+
+
+            }
+
+        }
 
     	// $category->save();
     	$notification = 'Categoria actualizada exitosamente';
